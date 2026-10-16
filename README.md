@@ -33,7 +33,7 @@ npm run preview
 
 | Layer | Technology |
 | --- | --- |
-| UI | React 19, TypeScript, Tailwind CSS 3, Lucide, Framer Motion, Recharts |
+| UI | React 19, TypeScript, Tailwind CSS 3, Lucide, Recharts |
 | Build | Vite |
 | Hosting | Cloudflare Workers **Static Assets** (no runtime Worker or paid services) |
 | CI/CD | GitHub Actions on PR, production deploy on push to `main` |

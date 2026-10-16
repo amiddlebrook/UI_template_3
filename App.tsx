@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, CircleHelp, Github, Leaf, ShieldCheck } from 'lucide-react';
 import { SolarNavigation } from './components/SolarNavigation';
 import { Dashboard } from './components/Dashboard';
@@ -118,17 +117,9 @@ const App: React.FC = () => {
         </header>
 
         <div className="bio-page min-w-0 flex-1 px-2 py-5 sm:px-5 lg:px-8 lg:py-7">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.section
-              key={activeView}
-              aria-label={TITLES[activeView]}
-              initial={preferences.motion ? { opacity: 0, y: 8 } : false}
-              animate={{ opacity: 1, y: 0 }}
-              exit={preferences.motion ? { opacity: 0, y: -8 } : undefined}
-              transition={{ duration: preferences.motion ? 0.18 : 0 }}
-              className="mx-auto w-full max-w-[1450px]"
-            >{content[activeView]}</motion.section>
-          </AnimatePresence>
+          <section key={activeView} aria-label={TITLES[activeView]} className="mx-auto w-full max-w-[1450px]">
+            {content[activeView]}
+          </section>
         </div>
 
         <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-bio-lipid/60 px-5 py-4 text-[10px] font-medium uppercase tracking-[.16em] text-bio-subtle/70 sm:px-8 lg:px-10">
