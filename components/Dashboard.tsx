@@ -1,146 +1,90 @@
-import React from 'react';
-import { Card } from './ui/Card';
-import { motion } from 'framer-motion';
-import { Activity, Zap, Droplet, Wind } from 'lucide-react';
+import React, { useState } from 'react';
+import { Activity, ArrowUpRight, Check, Droplets, Radio, RefreshCw, Waves, Zap } from 'lucide-react';
+
+const BASE_BARS = [35, 48, 42, 66, 54, 71, 62, 81, 68, 87, 76, 91, 83, 98, 72, 88, 76, 69, 81, 65, 75, 58, 68, 48];
+const ZONES = [
+  { name: 'Canopy', number: '01', metric: '72%', description: 'Simulated respiration' },
+  { name: 'Root', number: '02', metric: '86%', description: 'Simulated uptake' },
+  { name: 'Membrane', number: '03', metric: '64%', description: 'Simulated permeability' },
+  { name: 'Cortex', number: '04', metric: '91%', description: 'Simulated neural activity' }
+];
 
 export const Dashboard: React.FC = () => {
+  const [cycle, setCycle] = useState(0);
+  const [zone, setZone] = useState(0);
+  const efficiency = 93 + (cycle % 5);
   return (
-    <div className="h-full w-full overflow-y-auto p-4">
-       <div className="mb-8">
-           <h1 className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-bio-nucleus to-bio-subtle">
-               MORPHOLOGY
-           </h1>
-           <p className="font-mono text-bio-plasma text-xs mt-2 tracking-widest">SYSTEM_STATE: EVOLVING</p>
-       </div>
+    <div className="p-2 sm:p-3">
+      <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-bio-plasma"><span className="h-1.5 w-1.5 rounded-full bg-bio-plasma" /> Overview / Interactive demo</div>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">System Morphology</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-bio-subtle">A living interface for complex systems. Explore the structure, flows, and signals of a simulated organism.</p>
+        </div>
+        <button type="button" className="bio-button flex items-center gap-2 text-sm" onClick={() => setCycle(n => n + 1)}><RefreshCw size={16} /> Advance sample cycle</button>
+      </div>
 
-       {/* Organic Grid Layout */}
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-           
-           {/* Primary Organelle - Large morphing shape */}
-           <div className="col-span-1 md:col-span-2 h-96 relative">
-               <motion.div 
-                    className="absolute inset-0 bg-gradient-to-tr from-bio-plasma/10 to-bio-enzyme/10 animate-morph blur-xl"
-               />
-               <Card organic className="h-full relative z-10 border-bio-plasma/20">
-                   <div className="h-full flex flex-col justify-between">
-                       <div className="flex justify-between items-start">
-                           <div>
-                               <h2 className="text-3xl font-display font-bold text-bio-plasma">Metabolism</h2>
-                               <span className="text-xs text-bio-subtle font-mono">ENERGY PRODUCTION CYCLE</span>
-                           </div>
-                           <Activity className="text-bio-plasma" size={32} />
-                       </div>
-                       
-                       <div className="flex-1 flex items-center justify-center">
-                            {/* Abstract Visualization */}
-                            <div className="relative w-full h-32 flex items-center gap-1">
-                                {Array.from({ length: 20 }).map((_, i) => (
-                                    <motion.div
-                                        key={i}
-                                        className="flex-1 bg-bio-plasma rounded-full"
-                                        initial={{ height: 10, opacity: 0.2 }}
-                                        animate={{ 
-                                            height: [10, 40 + Math.random() * 60, 10],
-                                            opacity: [0.2, 0.8, 0.2]
-                                        }}
-                                        transition={{ 
-                                            duration: 2, 
-                                            repeat: Infinity, 
-                                            delay: i * 0.1,
-                                            ease: "easeInOut"
-                                        }}
-                                    />
-                                ))}
-                            </div>
-                       </div>
+      <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {[
+          { label: 'Efficiency', value: efficiency + '%', detail: 'Synthetic metabolic model', icon: Zap, color: 'text-bio-plasma' },
+          { label: 'Neural load', value: (64 + cycle % 11) + '%', detail: 'Synthetic signal capacity', icon: Activity, color: 'text-bio-enzyme' },
+          { label: 'Fluid balance', value: (84 + cycle % 8) + '%', detail: 'Synthetic equilibrium', icon: Droplets, color: 'text-cyan-300' }
+        ].map(item => (
+          <div className="bio-panel rounded-2xl p-5" key={item.label}>
+            <div className="flex items-center justify-between text-xs text-bio-subtle"><span className="font-semibold uppercase tracking-[.12em]">{item.label}</span><item.icon size={18} className={item.color} /></div>
+            <div className="mt-3 text-4xl font-bold tracking-tight">{item.value}</div>
+            <p className="mt-2 text-xs text-bio-subtle/85">{item.detail}</p>
+          </div>
+        ))}
+      </div>
 
-                       <div className="grid grid-cols-3 gap-4 border-t border-bio-lipid/50 pt-4">
-                           <div>
-                               <div className="text-2xl font-bold font-display">98%</div>
-                               <div className="text-[10px] text-bio-subtle uppercase">Efficiency</div>
-                           </div>
-                           <div>
-                               <div className="text-2xl font-bold font-display">42°C</div>
-                               <div className="text-[10px] text-bio-subtle uppercase">Core Temp</div>
-                           </div>
-                           <div>
-                               <div className="text-2xl font-bold font-display">1.2k</div>
-                               <div className="text-[10px] text-bio-subtle uppercase">ATP Output</div>
-                           </div>
-                       </div>
-                   </div>
-               </Card>
-           </div>
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-5">
+        <section className="bio-panel min-h-[365px] overflow-hidden rounded-3xl p-6 sm:p-8 xl:col-span-3">
+          <div className="mb-7 flex items-start justify-between">
+            <div><div className="mb-2 text-[10px] font-bold uppercase tracking-[.18em] text-bio-plasma">01 / Metabolic output</div><h2 className="text-2xl font-bold tracking-tight">Energy signature</h2><p className="mt-1 text-sm text-bio-subtle">Relative activity over a sample cycle</p></div>
+            <span className="rounded-lg border border-bio-plasma/20 bg-bio-plasma/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-bio-plasma">Cycle {String(cycle + 1).padStart(2, '0')}</span>
+          </div>
+          <div role="img" aria-label="Illustrative chart of fluctuating sample energy activity" className="flex h-44 items-end gap-[5px] rounded-xl border-b border-bio-lipid/80 pb-0.5 sm:gap-2">
+            {BASE_BARS.map((bar, i) => {
+              const height = Math.min(100, Math.max(14, bar + Math.sin(cycle + i * .7) * 12));
+              return <div key={i} className="group relative flex h-full flex-1 items-end"><div className="w-full rounded-t-sm bg-gradient-to-t from-bio-plasma/25 to-bio-plasma transition-all duration-500 group-hover:from-bio-enzyme/60 group-hover:to-bio-enzyme" style={{ height: height + '%' }} /></div>;
+            })}
+          </div>
+          <div className="mt-4 flex justify-between text-[10px] font-semibold uppercase tracking-widest text-bio-subtle"><span>Start / 00</span><span>Energy distribution · Arbitrary units</span><span>End / 24</span></div>
+          <div className="mt-7 grid grid-cols-2 gap-3 border-t border-bio-lipid/80 pt-6 sm:grid-cols-3">
+            <div><div className="text-xl font-bold">1.2k</div><div className="text-xs text-bio-subtle">Sample output</div></div>
+            <div><div className="text-xl font-bold">4.2 s</div><div className="text-xs text-bio-subtle">Synthetic interval</div></div>
+            <div className="col-span-2 sm:col-span-1"><div className="flex items-center gap-1 text-xl font-bold text-bio-plasma"><Check size={18} /> Normal</div><div className="text-xs text-bio-subtle">Demo model state</div></div>
+          </div>
+        </section>
 
-           {/* Secondary Organelles - Stacked */}
-           <div className="col-span-1 flex flex-col gap-6">
-               <Card className="flex-1 min-h-[180px]">
-                   <div className="flex items-center gap-4 mb-4">
-                       <div className="p-3 rounded-xl bg-bio-enzyme/10 text-bio-enzyme">
-                           <Zap size={20} />
-                       </div>
-                       <div>
-                           <div className="font-bold text-bio-nucleus">Neural Load</div>
-                           <div className="text-xs text-bio-subtle">CORTEX ACTIVITY</div>
-                       </div>
-                   </div>
-                   <div className="w-full bg-bio-lipid rounded-full h-2 mb-2 overflow-hidden">
-                       <motion.div 
-                            className="h-full bg-bio-enzyme"
-                            initial={{ width: '0%' }}
-                            animate={{ width: '64%' }}
-                            transition={{ duration: 1 }}
-                       />
-                   </div>
-                   <div className="text-right text-xs text-bio-enzyme font-mono">64% CAPACITY</div>
-               </Card>
+        <section className="bio-panel relative flex min-h-[365px] flex-col overflow-hidden rounded-3xl p-6 sm:p-8 xl:col-span-2">
+          <div className="relative z-10"><div className="mb-2 text-[10px] font-bold uppercase tracking-[.18em] text-bio-plasma">02 / Organism topology</div><h2 className="text-2xl font-bold tracking-tight">Living nucleus</h2><p className="mt-1 text-sm text-bio-subtle">Procedural spatial illustration</p></div>
+          <div className="relative flex flex-1 items-center justify-center py-8" role="img" aria-label="Animated concentric biological energy rings">
+            <div aria-hidden className="absolute h-56 w-56 rounded-full border border-bio-plasma/10 sm:h-64 sm:w-64" />
+            <div aria-hidden className="absolute h-44 w-44 animate-[spin_40s_linear_infinite] rounded-[42%] border border-dashed border-bio-plasma/40 sm:h-52 sm:w-52" />
+            <div aria-hidden className="absolute h-36 w-36 animate-morph rounded-[40%] border border-bio-plasma/35 bg-bio-plasma/[0.07] shadow-[0_0_75px_rgba(200,242,108,.12)] sm:h-40 sm:w-40" />
+            <div aria-hidden className="absolute h-20 w-20 rounded-full bg-bio-plasma/20 blur-xl" />
+            <div className="relative z-10 text-center"><div className="text-3xl font-bold text-bio-plasma">Ø</div><div className="mt-1 text-[10px] font-bold uppercase tracking-[.2em] text-bio-subtle">Nucleus</div></div>
+          </div>
+          <div className="relative z-10 flex items-center justify-between border-t border-bio-lipid/80 pt-5 text-xs"><span className="flex items-center gap-2 text-bio-subtle"><Radio size={14} className="text-bio-plasma" /> Topology simulation</span><span className="font-semibold text-bio-plasma">Stable</span></div>
+        </section>
+      </div>
 
-               <Card className="flex-1 min-h-[180px]">
-                   <div className="flex items-center gap-4 mb-4">
-                       <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-500">
-                           <Droplet size={20} />
-                       </div>
-                       <div>
-                           <div className="font-bold text-bio-nucleus">Hydration</div>
-                           <div className="text-xs text-bio-subtle">FLUID DYNAMICS</div>
-                       </div>
-                   </div>
-                    {/* Liquid animation */}
-                   <div className="relative h-16 w-full overflow-hidden rounded-lg bg-bio-lipid/50">
-                       <motion.div 
-                            className="absolute bottom-0 left-0 right-0 bg-cyan-500/50"
-                            animate={{ height: ['40%', '45%', '35%', '40%'] }}
-                            transition={{ duration: 4, repeat: Infinity }}
-                       />
-                       <motion.div 
-                            className="absolute bottom-0 left-0 right-0 bg-cyan-500/30"
-                            animate={{ height: ['42%', '38%', '46%', '42%'] }}
-                            transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-                       />
-                   </div>
-               </Card>
-           </div>
-
-           {/* Tertiary Strip */}
-           <div className="col-span-1 md:col-span-3 h-48">
-               <Card title="Environmental Stasis" className="h-full">
-                   <div className="flex h-full items-center justify-around">
-                        {[1,2,3,4,5].map((i) => (
-                            <div key={i} className="flex flex-col items-center gap-2 group cursor-pointer">
-                                <motion.div 
-                                    className="w-16 h-16 rounded-full border border-bio-lipid flex items-center justify-center group-hover:border-bio-plasma transition-colors"
-                                    whileHover={{ scale: 1.1, rotate: 90 }}
-                                >
-                                    <Wind size={20} className="text-bio-subtle group-hover:text-bio-plasma" />
-                                </motion.div>
-                                <span className="text-xs font-mono text-bio-subtle group-hover:text-bio-nucleus">Zone 0{i}</span>
-                            </div>
-                        ))}
-                   </div>
-               </Card>
-           </div>
-
-       </div>
+      <section className="bio-panel mt-5 rounded-3xl p-6 sm:p-8">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-2"><div><div className="mb-1 text-[10px] font-bold uppercase tracking-[.18em] text-bio-plasma">03 / Environments</div><h2 className="text-xl font-bold">Explore system zones</h2></div><span className="text-xs text-bio-subtle">Select a zone below</span></div>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {ZONES.map((item, i) => (
+            <button type="button" key={item.number} onClick={() => setZone(i)} aria-pressed={zone === i} className={`rounded-2xl border p-4 text-left transition sm:p-5 ${zone === i ? 'border-bio-plasma/40 bg-bio-plasma/10' : 'border-bio-lipid/80 bg-[#0c1512] hover:border-bio-plasma/30'}`}>
+              <div className="flex items-center justify-between text-[10px] text-bio-subtle"><span>ZONE / {item.number}</span><ArrowUpRight size={15} /></div>
+              <Waves size={22} className={`my-6 ${zone === i ? 'text-bio-plasma' : 'text-bio-subtle'}`} />
+              <div className="text-sm font-bold">{item.name}</div><div className="mt-1 text-xs text-bio-subtle">{item.description}</div>
+              <div className="mt-4 text-2xl font-bold text-bio-plasma">{item.metric}</div>
+            </button>
+          ))}
+        </div>
+        <p role="status" className="mt-5 text-xs text-bio-subtle">Selected environment: <strong className="text-bio-nucleus">{ZONES[zone].name}</strong>. Readings are generated for this interactive template, not measured.</p>
+      </section>
     </div>
   );
 };

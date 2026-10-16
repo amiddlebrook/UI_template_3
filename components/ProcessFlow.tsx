@@ -1,79 +1,64 @@
-import React from 'react';
-import { Card } from './ui/Card';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { ArrowRight, Check, GitGraph, Play, RotateCcw } from 'lucide-react';
+
+const STEPS = [
+  { name: 'Nutrient input', category: '01 / Intake', description: 'Raw environmental signals enter the model.', label: 'Absorption' },
+  { name: 'Reaction engine', category: '02 / Transform', description: 'Sample signals pass through a synthetic reaction stage.', label: 'Catalysis' },
+  { name: 'Signal routing', category: '03 / Relay', description: 'Output is normalized and routed through a virtual network.', label: 'Transmission' },
+  { name: 'Bloom output', category: '04 / Emit', description: 'The demonstration cycle completes with a new sample output.', label: 'Output' }
+];
 
 export const ProcessFlow: React.FC = () => {
+  const [step, setStep] = useState(0);
+  const [complete, setComplete] = useState(false);
+  const advance = () => {
+    if (complete) { setStep(0); setComplete(false); }
+    else if (step === STEPS.length - 1) setComplete(true);
+    else setStep(current => current + 1);
+  };
+
   return (
-    <div className="h-full w-full p-4 relative overflow-hidden">
-        {/* Background Root System */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
-            <path d="M100,300 Q400,100 800,300 T1200,300" fill="none" stroke="#C4F042" strokeWidth="2" />
-            <path d="M100,300 Q400,500 800,300" fill="none" stroke="#FF3366" strokeWidth="2" strokeDasharray="5,5" />
-            <circle cx="100" cy="300" r="4" fill="#E1E1E6" />
-            <circle cx="800" cy="300" r="4" fill="#E1E1E6" />
-        </svg>
-
-        <div className="grid grid-cols-3 gap-8 h-full relative z-10">
-            
-            {/* Input Node */}
-            <div className="col-span-1 flex items-center justify-center">
-                <Card organic className="w-64 h-64 flex flex-col items-center justify-center text-center border-bio-plasma">
-                     <div className="w-20 h-20 rounded-full bg-bio-plasma/20 flex items-center justify-center mb-4 animate-pulse-fast">
-                         <div className="w-10 h-10 rounded-full bg-bio-plasma"></div>
-                     </div>
-                     <h3 className="text-xl font-display font-bold text-bio-nucleus">Nutrient Input</h3>
-                     <p className="text-xs text-bio-subtle mt-2">ABSORPTION PHASE</p>
-                </Card>
-            </div>
-
-            {/* Processing Nodes (Floating) */}
-            <div className="col-span-1 flex flex-col justify-around py-20">
-                 {[1, 2].map((i) => (
-                     <motion.div 
-                        key={i}
-                        whileHover={{ scale: 1.05, x: 10 }}
-                        className="bg-bio-membrane border border-bio-lipid p-6 rounded-[2rem] flex items-center gap-4 shadow-xl"
-                     >
-                         <div className="h-12 w-1 rounded-full bg-bio-enzyme"></div>
-                         <div>
-                             <div className="text-sm font-bold text-bio-nucleus">Enzymatic Reaction {i}</div>
-                             <div className="text-[10px] font-mono text-bio-enzyme">CATALYZING...</div>
-                         </div>
-                     </motion.div>
-                 ))}
-            </div>
-
-            {/* Output Node */}
-            <div className="col-span-1 flex items-center justify-center">
-                 <div className="relative">
-                     {/* Spores Visualization */}
-                     {Array.from({ length: 12 }).map((_, i) => (
-                         <motion.div
-                            key={i}
-                            className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full bg-bio-nucleus"
-                            animate={{
-                                x: Math.cos(i * 30 * (Math.PI/180)) * 100,
-                                y: Math.sin(i * 30 * (Math.PI/180)) * 100,
-                                opacity: [0, 1, 0]
-                            }}
-                            transition={{
-                                duration: 3,
-                                repeat: Infinity,
-                                delay: i * 0.2
-                            }}
-                         />
-                     ))}
-                     
-                     <Card className="w-48 h-48 rounded-full flex items-center justify-center border-bio-nucleus/50">
-                         <div className="text-center">
-                             <div className="text-3xl font-display font-bold text-white">Bloom</div>
-                             <div className="text-xs text-bio-subtle mt-1">OUTPUT READY</div>
-                         </div>
-                     </Card>
-                 </div>
-            </div>
-
+    <div className="p-2 sm:p-3">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-bio-plasma"><GitGraph size={14} /> Reaction network / Simulated</div>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Mycelium Network</h1>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-bio-subtle">Trace a simple four-stage reaction pipeline. The simulation runs entirely in your browser.</p>
         </div>
+        <button type="button" onClick={advance} className="bio-button bio-button-primary flex items-center gap-2 text-sm">{complete ? <RotateCcw size={16} /> : <Play size={16} />}{complete ? 'Restart cycle' : 'Advance stage'}</button>
+      </div>
+      <section className="bio-panel overflow-hidden rounded-3xl p-5 sm:p-8">
+        <div className="mb-7 flex flex-wrap justify-between gap-3 border-b border-bio-lipid/80 pb-5">
+          <div><div className="text-xs font-bold uppercase tracking-widest text-bio-subtle">Current stage</div><div role="status" className="mt-1 text-xl font-bold">{complete ? 'Cycle complete' : STEPS[step].name}</div></div>
+          <span className="h-fit rounded-full border border-bio-plasma/30 bg-bio-plasma/10 px-3 py-2 text-xs font-semibold text-bio-plasma">{complete ? '4 / 4 complete' : `${step + 1} / 4 processing`}</span>
+        </div>
+
+        <div className="grid gap-3 lg:grid-cols-4">
+          {STEPS.map((item, index) => {
+            const done = complete || index < step;
+            const active = !complete && index === step;
+            return (
+              <div key={item.name} className="relative flex items-center gap-3 lg:block">
+                <div className={`relative flex-1 rounded-2xl border p-5 transition-all duration-300 lg:min-h-[255px] ${active ? 'border-bio-plasma/60 bg-bio-plasma/[0.08] shadow-[0_0_35px_rgba(200,242,108,.07)]' : done ? 'border-bio-plasma/20 bg-[#121e17]' : 'border-bio-lipid bg-[#0d1512]'}`}>
+                  <div className="mb-7 flex items-center justify-between">
+                    <span className={`text-[10px] font-bold uppercase tracking-widest ${active ? 'text-bio-plasma' : 'text-bio-subtle'}`}>{item.category}</span>
+                    <span className={`flex h-7 w-7 items-center justify-center rounded-full ${done ? 'bg-bio-plasma text-bio-void' : active ? 'border border-bio-plasma text-bio-plasma' : 'border border-bio-lipid text-bio-subtle'}`}>{done ? <Check size={16} /> : String(index + 1)}</span>
+                  </div>
+                  <div className="mb-1 text-base font-bold">{item.name}</div>
+                  <div className="mb-4 text-[10px] font-bold uppercase tracking-widest text-bio-plasma">{item.label}</div>
+                  <p className="text-xs leading-5 text-bio-subtle">{item.description}</p>
+                </div>
+                {index < STEPS.length - 1 && <ArrowRight aria-hidden size={17} className="hidden shrink-0 text-bio-plasma/50 lg:absolute lg:-right-[15px] lg:top-1/2 lg:z-10 lg:block" />}
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-8">
+          <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-bio-subtle"><span>Pipeline progress</span><span>{complete ? 100 : Math.round((step / STEPS.length) * 100)}%</span></div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-bio-lipid"><div className="h-full rounded-full bg-bio-plasma transition-all duration-500" style={{ width: (complete ? 100 : step / STEPS.length * 100) + '%' }} /></div>
+        </div>
+      </section>
+      <p className="mt-5 px-2 text-xs leading-5 text-bio-subtle">This is an interactive visualization of process states, not a real-time automation or live biological workflow.</p>
     </div>
   );
 };
